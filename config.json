@@ -1,19 +1,106 @@
 {
-  "inbounds": [{
-    "port": 9000,
-    "protocol": "vmess",
-    "settings": {
-      "clients": [
+    "log": {
+        "loglevel": "info"
+    },
+    "inbounds": [
         {
-          "id": "1eb6e917-774b-4a84-aff6-b058577c60a5",
-          "level": 1,
-          "alterId": 64
+            "tag": "VMess TCP",
+            "listen": "0.0.0.0",
+            "port": 8081,
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "40b1623c-6cfe-44ef-b6f6-3e9aefc1f0c7"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "tcpSettings": {
+                    "header": {
+                        "type": "http",
+                        "request": {
+                            "method": "GET",
+                            "path": [
+                                "/"
+                            ],
+                            "headers": {
+                                "Host": [
+                                    "google.com"
+                                ]
+                            }
+                        },
+                        "response": {}
+                    }
+                },
+                "security": "none"
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ]
+            }
+        },
+        {
+            "tag": "VMess Websocket",
+            "listen": "0.0.0.0",
+            "port": 8080,
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "40b1623c-6cfe-44ef-b6f6-3e9aefc1f0c7"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/",
+                    "headers": {
+                        "Host": "google.com"
+                    }
+                },
+                "security": "none"
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ]
+            }
         }
-      ]
+    
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "DIRECT"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "BLOCK"
+        }
+    ],
+    "routing": {
+        "rules": [
+            {
+                "ip": [
+                    "geoip:private"
+                ],
+                "domain": [
+                    "geosite:private"
+                ],
+                "protocol": [
+                    "bittorrent"
+                ],
+                "outboundTag": "BLOCK",
+                "type": "field"
+            }
+        ]
     }
-  }],
-  "outbounds": [{
-    "protocol": "freedom",
-    "settings": {}
-  }]
 }
